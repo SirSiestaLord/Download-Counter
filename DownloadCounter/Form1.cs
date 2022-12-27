@@ -8,14 +8,18 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System;
+using System.Media;
+
 using System.Diagnostics;
 namespace DownloadCounter
 {
     public partial class Form1 : Form
     {
         public static bool isdone = false;
-        public static bool isdoneanddone;
+        public static bool ischeckedformusic;
         public static bool shouldvisible;
+        public static string filepath;
+        public static bool musicon;
 
         public CountDownTimer timer = new CountDownTimer();
         public static bool ischecked;
@@ -29,17 +33,15 @@ namespace DownloadCounter
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            if (shouldvisible)
-            {
-                radioButton1.Visible = true;
-                radioButton2.Visible = true;
-            }
+            
            
         }
 
         public void Time_setter()
         {
-
+            Worker.i = 0;
+            timer.Stop();
+            timer.Dispose();
             //set to 30 mins
             timer.SetTime(int.Parse(Hournum.Value.ToString()), int.Parse(minutnum.Value.ToString()), int.Parse(secondnum.Value.ToString()));
 
@@ -53,15 +55,16 @@ namespace DownloadCounter
             //timer step. By default is 1 second
             timer.StepMs = 77; // for nice milliseconds time switch
 
-            ischecked = radioButton1.Checked;
             radioButton1.Visible = false;
-            radioButton2.Visible = false;
+            radioButton2.Visible = false; radioButton3.Visible = false;
 
         }
 
         public void Time_setter(int hour, int minute, int second)
         {
-
+            Worker.i = 0;
+            timer.Stop();
+            timer.Dispose();
             //set to 30 mins
             timer.SetTime(hour, minute, second);
 
@@ -89,6 +92,26 @@ namespace DownloadCounter
 
 
         }
+        public class musicker
+        {
+           public static SoundPlayer player = new SoundPlayer();
+
+            public static void load()
+            {
+                musicker.player.SoundLocation = filepath;
+
+            }
+            public static void play()
+            {
+                musicker.player.Play();
+
+            }
+            public static void stop()
+            {
+                musicker.player.Stop();
+            }
+
+        }
 
    
 
@@ -99,6 +122,8 @@ namespace DownloadCounter
             public static bool x=false;
             public static int i = 0;
             public static bool isclicked = false;
+
+          
            public static void exitter(string k)
             {
               
@@ -110,6 +135,16 @@ namespace DownloadCounter
                     form1.InitializeComponent();
                     form1.radioButton1.Visible = true;
                     form1.radioButton2.Visible = true;
+                    form1.radioButton3.Visible = true;
+                    if (ischeckedformusic)
+                    {
+                        musicker.load();
+                        musicker.play();
+
+                    }
+
+
+
                     form2.Show();
 
               
@@ -339,12 +374,30 @@ namespace DownloadCounter
 
         private void radioButton2_CheckedChanged(object sender, EventArgs e)
         {
+            if (radioButton3.Checked)
+            {
 
+            }
+            else { ischeckedformusic = false; }
         }
 
         private void radioButton1_CheckedChanged(object sender, EventArgs e)
         {
+            if (radioButton3.Checked)
+            {
 
+            }
+            else { ischeckedformusic = false; }
+        }
+
+        private void radioButton3_CheckedChanged(object sender, EventArgs e)
+        {
+            OpenFileDialog fileDialog = new OpenFileDialog();
+            fileDialog.Filter= "Music Files (*.wav)| *.wav";
+            fileDialog.ShowDialog();
+            filepath = fileDialog.FileName;
+            ischeckedformusic = true;
+            
         }
     }
 }

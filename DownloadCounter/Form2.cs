@@ -25,7 +25,8 @@ namespace DownloadCounter
         private void button1_Click(object sender, EventArgs e)
         {
             Form1.Worker.isclicked = true;
-          
+            Form1.musicker.stop();
+            Application.Restart();
             Close(); Form1.Worker.i = 0;
 
         }
